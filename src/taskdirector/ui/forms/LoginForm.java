@@ -1,14 +1,12 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * LoginForm.java
  *
  * Created on Nov 23, 2011, 11:20:36 AM
  */
 package taskdirector.ui.forms;
+
+import taskdirector.events.listeners.ILoginAttemptEventListener;
+import java.util.*;
 
 /**
  *
@@ -39,11 +37,6 @@ public class LoginForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Task Director - Login");
-        addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                Test(evt);
-            }
-        });
 
         jLabel1.setText("Username:");
 
@@ -52,6 +45,11 @@ public class LoginForm extends javax.swing.JFrame {
         txtPassword.setToolTipText("");
 
         btnLogin.setText("Login");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         btnCreateAccount.setText("Create Account");
 
@@ -97,9 +95,13 @@ public class LoginForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void Test(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_Test
-        // TODO add your handling code here:
-    }//GEN-LAST:event_Test
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        if (loginAttemptListeners != null)
+        {
+            for (ILoginAttemptEventListener item : loginAttemptListeners)
+                item.LoginAttempted(txtUsername.getText(), txtPassword.getPassword().toString());
+        }
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -136,6 +138,19 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void addLoginAttemptEventListener(ILoginAttemptEventListener listener)
+    {
+        if (loginAttemptListeners == null)
+            loginAttemptListeners = new ArrayList<ILoginAttemptEventListener>();
+        
+        if (!loginAttemptListeners.contains(listener))
+            loginAttemptListeners.add(listener);
+    }
+    
+    // Event Listeners
+    private List<ILoginAttemptEventListener> loginAttemptListeners;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateAccount;
     private javax.swing.JButton btnLogin;
