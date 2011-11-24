@@ -4,15 +4,22 @@
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="fileMenu">
           <Properties>
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Edit"/>
-          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="newTaskMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="New Task"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="exitMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Exit"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
         </Menu>
       </SubComponents>
     </Menu>
@@ -90,7 +97,7 @@
             <Component class="javax.swing.JTree" name="taskTree">
               <Properties>
                 <Property name="model" type="javax.swing.tree.TreeModel" editor="org.netbeans.modules.form.editors2.TreeModelEditor">
-                  <TreeModel code="Tasks&#xa; Open Tasks&#xa; Completed Tasks"/>
+                  <TreeModel code=""/>
                 </Property>
                 <Property name="rootVisible" type="boolean" value="false"/>
               </Properties>

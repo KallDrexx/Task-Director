@@ -34,8 +34,9 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         taskTree = new javax.swing.JTree();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
+        fileMenu = new javax.swing.JMenu();
+        newTaskMenuItem = new javax.swing.JMenuItem();
+        exitMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Task Director - Dashboard");
@@ -44,22 +45,22 @@ public class MainForm extends javax.swing.JFrame {
         jSplitPane1.setDividerSize(10);
         jSplitPane1.setRightComponent(taskTabs);
 
-        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Tasks");
-        javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Open Tasks");
-        treeNode1.add(treeNode2);
-        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Completed Tasks");
-        treeNode1.add(treeNode2);
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         taskTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         taskTree.setRootVisible(false);
         jScrollPane1.setViewportView(taskTree);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
 
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
+        fileMenu.setText("File");
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        newTaskMenuItem.setText("New Task");
+        fileMenu.add(newTaskMenuItem);
+
+        exitMenuItem.setText("Exit");
+        fileMenu.add(exitMenuItem);
+
+        jMenuBar1.add(fileMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -119,11 +120,12 @@ public class MainForm extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JMenuItem newTaskMenuItem;
     private javax.swing.JTabbedPane taskTabs;
     private javax.swing.JTree taskTree;
     // End of variables declaration//GEN-END:variables
