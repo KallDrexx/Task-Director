@@ -1,9 +1,15 @@
-
 package taskdirector.services.mocks;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+/*import org.dozer.loader.api.BeanMappingBuilder;
+import org.dozer.CustomConverter;
+import org.dozer.MappingException;
+import org.dozer.loader.api.FieldsMappingOptions.*;
+import org.dozer.loader.api.TypeMappingOptions.*;
+import org.dozer.DozerBeanMapper;
+import org.dozer.loader.api.FieldsMappingOptions;*/
 import taskdirector.services.interfaces.ITaskService;
 import taskdirector.services.viewmodels.NewTaskViewModel;
 import taskdirector.services.viewmodels.TaskDetailsViewModel;
@@ -16,8 +22,10 @@ import taskdirector.services.viewmodels.TaskSummaryViewModel;
 public class MockTaskService implements ITaskService {
 
     protected List<TaskDetailsViewModel> taskList;
+    //protected DozerBeanMapper mapper;
     
     public MockTaskService() {
+        initEntityMappings();
         taskList = new ArrayList<TaskDetailsViewModel>();
     }
     
@@ -80,4 +88,37 @@ public class MockTaskService implements ITaskService {
         return task.getId();
     }
     
+    private void initEntityMappings()
+    {
+        /* Commented out until I can get dozer not to give me a NoClassDefFound error
+        BeanMappingBuilder builder = new BeanMappingBuilder() {
+            @Override
+            protected void configure() {
+                class isCompletedConverter implements CustomConverter {
+                    @Override
+                    public Object convert(Object destination, Object source, Class destClass, Class sourceClass) {
+                        if (source == null) { return null; }
+
+                        // Make sure the source is a double and the destination is a boolean
+                        if (!(source instanceof Double) || !(destination instanceof Boolean))
+                            throw new MappingException("Source was not a double or destination was not a boolean");
+
+                        Boolean castedDest = (Boolean)destination;
+                        Double castedSrc = (Double)source;
+                        castedDest = castedSrc == 1;
+
+                        return castedDest;
+                    }
+                };
+
+                mapping(TaskDetailsViewModel.class, TaskSummaryViewModel.class)
+                    .fields("percentCompleted", "isCompleted",
+                        FieldsMappingOptions.customConverter(isCompletedConverter.class));
+            }
+        };  
+
+        mapper = new DozerBeanMapper();
+        mapper.addMapping(builder); 
+         */
+    }
 }
