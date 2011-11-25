@@ -31,7 +31,14 @@ public interface ITaskService {
     
     /**
      * Updates the task based on the entered task details
-     * @param task 
+     * @param task Task to update.  If the id value is null, the task is added to the system
      */
     void UpdateTaskDetails(TaskDetailsViewModel task);
+    
+    /**
+     * Creates a new task in the system
+     * @param newTask Details of the new task
+     * @return ID value for the new task
+     */
+    UUID CreateTask(NewTaskViewModel newTask);
 }
