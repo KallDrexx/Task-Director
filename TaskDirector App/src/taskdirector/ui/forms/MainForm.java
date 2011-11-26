@@ -1,13 +1,18 @@
 /*
- * 
- */
-
-/*
  * MainForm.java
  *
  * Created on Nov 24, 2011, 3:54:43 PM
  */
 package taskdirector.ui.forms;
+
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JPanel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import taskdirector.services.viewmodels.TaskSummaryViewModel;
 
 /**
  *
@@ -18,6 +23,8 @@ public class MainForm extends javax.swing.JFrame {
     /** Creates new form MainForm */
     public MainForm() {
         initComponents();
+        
+        internalTaskList = new ArrayList<TaskSummaryViewModel>();
     }
 
     /** This method is called from within the constructor to
@@ -119,6 +126,7 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
     }
+            
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
@@ -129,4 +137,36 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JTabbedPane taskTabs;
     private javax.swing.JTree taskTree;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * Custom variable definitions
+     */
+    protected List<TaskSummaryViewModel> internalTaskList;
+    
+    /**
+     * Updates the list of tasks for the form
+     * @param taskList List of tasks the form should keep track of
+     */
+    public void updateTasks(List<TaskSummaryViewModel> taskList)
+    {
+        // Setup the core tree nodes
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+        DefaultMutableTreeNode openTasks = new DefaultMutableTreeNode("Open Tasks", true);
+        DefaultMutableTreeNode completedTasks = new DefaultMutableTreeNode("Completed Tasks", true);
+        root.add(openTasks);
+        root.add(completedTasks);
+        
+        // Go through the passed in task list and create the tree nodes for it
+        for (TaskSummaryViewModel task : taskList)
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(task, false);
+            if (task.getIsCompleted())
+                completedTasks.add(node);
+            else
+                openTasks.add(node);
+        }
+        
+        TreeModel model = new DefaultTreeModel(root);
+        taskTree.setModel(model);
+    }
 }
