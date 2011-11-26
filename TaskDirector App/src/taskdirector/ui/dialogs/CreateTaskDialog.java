@@ -27,18 +27,18 @@ public class CreateTaskDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        txtTaskName = new javax.swing.JTextField();
-        btnCreateTask = new javax.swing.JButton();
+        taskNameTextbox = new javax.swing.JTextField();
+        createTaskButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create Task");
 
         jLabel1.setText("Task Name:");
 
-        btnCreateTask.setText("Create");
-        btnCreateTask.addActionListener(new java.awt.event.ActionListener() {
+        createTaskButton.setText("Create");
+        createTaskButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateTaskActionPerformed(evt);
+                createTaskButtonActionPerformed(evt);
             }
         });
 
@@ -49,11 +49,11 @@ public class CreateTaskDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnCreateTask)
+                    .addComponent(createTaskButton)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTaskName, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(taskNameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -62,19 +62,19 @@ public class CreateTaskDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtTaskName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(taskNameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCreateTask)
+                .addComponent(createTaskButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCreateTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateTaskActionPerformed
-        taskName = txtTaskName.getText();
+    private void createTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createTaskButtonActionPerformed
+        taskName = taskNameTextbox.getText();
         this.setVisible(false);
-    }//GEN-LAST:event_btnCreateTaskActionPerformed
+    }//GEN-LAST:event_createTaskButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -120,9 +120,9 @@ public class CreateTaskDialog extends javax.swing.JDialog {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCreateTask;
+    private javax.swing.JButton createTaskButton;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField txtTaskName;
+    private javax.swing.JTextField taskNameTextbox;
     // End of variables declaration//GEN-END:variables
 
     // Custom variables
