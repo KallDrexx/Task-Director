@@ -37,10 +37,14 @@ public class TaskEditorController
     public void handleCreateTaskEvent(String taskName) {
         NewTaskViewModel newTask = new NewTaskViewModel();
         newTask.setName(taskName);
-        taskService.CreateTask(newTask);
+        UUID newTaskId = taskService.CreateTask(newTask);
         
         // Update the main form's task listing
         mainForm.updateTasks(taskService.getAllTasks());
+        
+        // Show the details for the new task
+        TaskDetailsViewModel taskDetails = taskService.getTaskDetails(newTaskId);
+        mainForm.addTaskTab(taskDetails);
     }
 
     @Override
