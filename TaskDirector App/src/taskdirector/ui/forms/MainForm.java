@@ -7,6 +7,7 @@ package taskdirector.ui.forms;
 
 import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -171,13 +172,17 @@ public class MainForm extends javax.swing.JFrame {
      */
     public void updateTasks(List<TaskSummaryViewModel> taskList)
     {
+        // Copy the tasks to a new list and sort it
+        List<TaskSummaryViewModel> sortedList = new ArrayList<TaskSummaryViewModel>(taskList);
+        Collections.sort(sortedList);
+        
         // Setup the core tree nodes
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         DefaultMutableTreeNode openTasks = new DefaultMutableTreeNode("Open Tasks", true);
         DefaultMutableTreeNode completedTasks = new DefaultMutableTreeNode("Completed Tasks", true);
         
         // Go through the passed in task list and create the tree nodes for it
-        for (TaskSummaryViewModel task : taskList)
+        for (TaskSummaryViewModel task : sortedList)
         {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(task, false);
             if (task.getIsCompleted())

@@ -7,7 +7,7 @@ import java.util.*;
  * Contains the summary of a task
  * @author KallDrexx
  */
-public class TaskSummaryViewModel {
+public class TaskSummaryViewModel implements Comparable<TaskSummaryViewModel> {
     protected UUID id;
     protected String name;
     protected boolean isCompleted;
@@ -46,5 +46,10 @@ public class TaskSummaryViewModel {
     public boolean getIsCompleted()
     {
         return isCompleted;
+    }
+
+    @Override
+    public int compareTo(TaskSummaryViewModel o) {
+        return name.compareToIgnoreCase(o.getName());
     }
 }
