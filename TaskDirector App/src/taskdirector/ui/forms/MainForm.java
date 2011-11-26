@@ -12,11 +12,16 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 import taskdirector.events.listeners.ICreateTaskEventListener;
+import taskdirector.events.listeners.ITaskDetailsRequestedListener;
+import taskdirector.services.viewmodels.TaskDetailsViewModel;
 import taskdirector.services.viewmodels.TaskSummaryViewModel;
 import taskdirector.ui.dialogs.CreateTaskDialog;
 import taskdirector.ui.panels.TaskSummaryPanel;
+import taskdirector.ui.panels.TaskDetailsPanel;
 
 /**
  *
@@ -29,6 +34,7 @@ public class MainForm extends javax.swing.JFrame {
         initComponents();
         
         internalTaskList = new ArrayList<TaskSummaryViewModel>();
+        tabbedTaskList = new ArrayList<TaskDetailsPanel>();
         
         // Add the summary tab
         summaryPanel = new TaskSummaryPanel();
@@ -63,6 +69,18 @@ public class MainForm extends javax.swing.JFrame {
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         taskTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         taskTree.setRootVisible(false);
+        taskTree.addTreeWillExpandListener(new javax.swing.event.TreeWillExpandListener() {
+            public void treeWillCollapse(javax.swing.event.TreeExpansionEvent evt)throws javax.swing.tree.ExpandVetoException {
+                taskTreeWillCollapseHandler(evt);
+            }
+            public void treeWillExpand(javax.swing.event.TreeExpansionEvent evt)throws javax.swing.tree.ExpandVetoException {
+            }
+        });
+        taskTree.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                treeMousePressedHandler(evt);
+            }
+        });
         jScrollPane1.setViewportView(taskTree);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
@@ -118,6 +136,39 @@ public class MainForm extends javax.swing.JFrame {
         dlg.dispose();
     }//GEN-LAST:event_newTaskMenuItemClicked
 
+    private void treeMousePressedHandler(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMousePressedHandler
+        // Check if this was a double click on a node
+        int selRow = taskTree.getRowForLocation(evt.getX(), evt.getY());
+        TreePath selPath = taskTree.getPathForLocation(evt.getX(), evt.getY());
+        
+        if (selRow != -1)
+        {
+            if (evt.getClickCount() == 2)
+            {
+                Object node = selPath.getLastPathComponent();
+                if (node instanceof DefaultMutableTreeNode)
+                {
+                    DefaultMutableTreeNode tNode = (DefaultMutableTreeNode)node;
+                    if (tNode.getUserObject() instanceof TaskSummaryViewModel)
+                    {
+                        // Task was double clicked.  Get the details of the task and create a tab
+                        if (taskDetailsReqListeners == null)
+                            return;
+                        
+                        TaskSummaryViewModel taskObj = (TaskSummaryViewModel)tNode.getUserObject();
+                        TaskDetailsViewModel task = taskDetailsReqListeners.getTaskDetails(taskObj.getId());
+                        addTaskTab(task);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_treeMousePressedHandler
+
+    private void taskTreeWillCollapseHandler(javax.swing.event.TreeExpansionEvent evt) throws javax.swing.tree.ExpandVetoException {//GEN-FIRST:event_taskTreeWillCollapseHandler
+        // Prevent nodes from collapsing
+        throw new ExpandVetoException(evt);
+    }//GEN-LAST:event_taskTreeWillCollapseHandler
+
     /**
      * @param args the command line arguments
      */
@@ -170,7 +221,9 @@ public class MainForm extends javax.swing.JFrame {
      */
     protected List<TaskSummaryViewModel> internalTaskList;
     protected List<ICreateTaskEventListener> createTaskListeners;
+    protected ITaskDetailsRequestedListener taskDetailsReqListeners;
     protected TaskSummaryPanel summaryPanel;
+    protected List<TaskDetailsPanel> tabbedTaskList;
     
     /**
      * Updates the list of tasks for the form
@@ -219,7 +272,34 @@ public class MainForm extends javax.swing.JFrame {
     }
     
     /**
-     * Adds the specified class as a create task event listener
+     * Creates a details tab for the specified task
+     * @param task 
+     */
+    public void addTaskTab(TaskDetailsViewModel task)
+    {
+        if (task == null)
+            return;
+        
+        // Make sure this task does not already have a tab opened for it
+        for (TaskDetailsPanel tabbedTaskPanel : tabbedTaskList)
+        {
+            if (tabbedTaskPanel.getTaskId() == task.getId())
+            {
+                taskTabs.setSelectedComponent(tabbedTaskPanel);
+                return;
+            }
+        }
+        
+        TaskDetailsPanel tab = new TaskDetailsPanel(task);
+        taskTabs.add(task.getName(), tab);
+        taskTabs.setSelectedComponent(tab);
+        tabbedTaskList.add(tab);
+    }
+    
+    // Listeners
+    
+    /**
+     * Adds the specified object as a create task event listener
      * @param listener 
      */
     public void addCreateTaskEventListener(ICreateTaskEventListener listener)
@@ -229,5 +309,15 @@ public class MainForm extends javax.swing.JFrame {
         
         if (!createTaskListeners.contains(listener))
             createTaskListeners.add(listener);
+    }
+    
+    /**
+     * Adds the specified object as a task details requested listener
+     * @param listener 
+     */
+    public void addTaskDetailsRequestedListener(ITaskDetailsRequestedListener listener)
+    {
+        // Only one listener is allowed
+        taskDetailsReqListeners = listener;
     }
 }
