@@ -1,13 +1,15 @@
 package taskdirector.app.controllers;
 
+import taskdirector.events.listeners.ICreateTaskEventListener;
 import taskdirector.services.interfaces.ITaskService;
+import taskdirector.services.viewmodels.NewTaskViewModel;
 import taskdirector.ui.forms.MainForm;
 
 /**
  * Controller that manages the retrieval and editing of tasks
  * @author KallDrexx
  */
-public class TaskEditorController implements IController {
+public class TaskEditorController implements IController, ICreateTaskEventListener {
 
     protected MainForm mainForm;
     protected ITaskService taskService;
@@ -21,7 +23,18 @@ public class TaskEditorController implements IController {
     public void Execute() {
         // Show the main form
         mainForm = new MainForm();
+        mainForm.addCreateTaskEventListener(this);
         mainForm.setVisible(true);
+    }
+
+    @Override
+    public void handleCreateTaskEvent(String taskName) {
+        NewTaskViewModel newTask = new NewTaskViewModel();
+        newTask.setName(taskName);
+        taskService.CreateTask(newTask);
+        
+        // Update the main form's task listing
+        mainForm.updateTasks(taskService.getAllTasks());
     }
     
 }

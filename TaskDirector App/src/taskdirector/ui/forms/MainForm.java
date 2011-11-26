@@ -12,7 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import taskdirector.events.listeners.ICreateTaskEventListener;
 import taskdirector.services.viewmodels.TaskSummaryViewModel;
+import taskdirector.ui.dialogs.CreateTaskDialog;
 
 /**
  *
@@ -62,6 +64,11 @@ public class MainForm extends javax.swing.JFrame {
         fileMenu.setText("File");
 
         newTaskMenuItem.setText("New Task");
+        newTaskMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newTaskMenuItemClicked(evt);
+            }
+        });
         fileMenu.add(newTaskMenuItem);
 
         exitMenuItem.setText("Exit");
@@ -90,6 +97,20 @@ public class MainForm extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void newTaskMenuItemClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTaskMenuItemClicked
+        // Show the create task dialog
+        CreateTaskDialog dlg = new CreateTaskDialog(this, true);
+        dlg.setVisible(true);
+        
+        // Get the desired task name and create the task
+        String taskName = dlg.getTaskName();
+        if (createTaskListeners != null)
+            for (ICreateTaskEventListener listener : createTaskListeners)
+                listener.handleCreateTaskEvent(taskName);
+        
+        dlg.dispose();
+    }//GEN-LAST:event_newTaskMenuItemClicked
 
     /**
      * @param args the command line arguments
@@ -142,6 +163,7 @@ public class MainForm extends javax.swing.JFrame {
      * Custom variable definitions
      */
     protected List<TaskSummaryViewModel> internalTaskList;
+    protected List<ICreateTaskEventListener> createTaskListeners;
     
     /**
      * Updates the list of tasks for the form
@@ -168,5 +190,18 @@ public class MainForm extends javax.swing.JFrame {
         
         TreeModel model = new DefaultTreeModel(root);
         taskTree.setModel(model);
+    }
+    
+    /**
+     * Adds the specified class as a create task event listener
+     * @param listener 
+     */
+    public void addCreateTaskEventListener(ICreateTaskEventListener listener)
+    {
+        if (createTaskListeners == null)
+            createTaskListeners = new ArrayList<ICreateTaskEventListener>();
+        
+        if (!createTaskListeners.contains(listener))
+            createTaskListeners.add(listener);
     }
 }
