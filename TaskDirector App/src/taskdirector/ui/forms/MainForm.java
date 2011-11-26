@@ -16,6 +16,7 @@ import javax.swing.tree.TreeModel;
 import taskdirector.events.listeners.ICreateTaskEventListener;
 import taskdirector.services.viewmodels.TaskSummaryViewModel;
 import taskdirector.ui.dialogs.CreateTaskDialog;
+import taskdirector.ui.panels.TaskSummaryPanel;
 
 /**
  *
@@ -28,6 +29,10 @@ public class MainForm extends javax.swing.JFrame {
         initComponents();
         
         internalTaskList = new ArrayList<TaskSummaryViewModel>();
+        
+        // Add the summary tab
+        summaryPanel = new TaskSummaryPanel();
+        taskTabs.add("Summary", summaryPanel);
     }
 
     /** This method is called from within the constructor to
@@ -165,6 +170,7 @@ public class MainForm extends javax.swing.JFrame {
      */
     protected List<TaskSummaryViewModel> internalTaskList;
     protected List<ICreateTaskEventListener> createTaskListeners;
+    protected TaskSummaryPanel summaryPanel;
     
     /**
      * Updates the list of tasks for the form
@@ -172,6 +178,10 @@ public class MainForm extends javax.swing.JFrame {
      */
     public void updateTasks(List<TaskSummaryViewModel> taskList)
     {
+        // Update the summary tab
+        summaryPanel.UpdateSummary(taskList);
+        
+        // Update the task tree
         // Copy the tasks to a new list and sort it
         List<TaskSummaryViewModel> sortedList = new ArrayList<TaskSummaryViewModel>(taskList);
         Collections.sort(sortedList);
