@@ -27,7 +27,7 @@ public class LoginController implements IController, ILoginAttemptEventListener 
      * @return 
      */
     @Override
-    public void Execute()
+    public void execute()
     {
         // Display the login form
         loginForm = new LoginForm();
@@ -45,6 +45,6 @@ public class LoginController implements IController, ILoginAttemptEventListener 
         // Activate the task editor controller
         taskService.setCurrentSessionId(sessionId);
         TaskEditorController controller = new TaskEditorController(taskService);
-        controller.Execute();
+        controller.execute();
     }
 }

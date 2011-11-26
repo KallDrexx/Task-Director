@@ -20,7 +20,7 @@ public class TaskEditorController implements IController, ICreateTaskEventListen
     }
     
     @Override
-    public void Execute() {
+    public void execute() {
         // Show the main form
         mainForm = new MainForm();
         mainForm.addCreateTaskEventListener(this);

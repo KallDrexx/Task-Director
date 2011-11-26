@@ -8,5 +8,5 @@ public interface IController {
     /**
      * Executes the controller
      */
-    void Execute();
+    void execute();
 }

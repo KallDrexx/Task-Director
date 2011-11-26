@@ -21,6 +21,6 @@ public class TaskDirectorApp {
         ITaskService taskService = new MockTaskService();
         
         IController controller = new LoginController(userService, taskService);
-        controller.Execute();
+        controller.execute();
     }
 }
