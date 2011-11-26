@@ -24,6 +24,7 @@ public class TaskEditorController implements IController, ICreateTaskEventListen
         // Show the main form
         mainForm = new MainForm();
         mainForm.addCreateTaskEventListener(this);
+        mainForm.updateTasks(taskService.getAllTasks());
         mainForm.setVisible(true);
     }
 

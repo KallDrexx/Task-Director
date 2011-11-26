@@ -175,8 +175,6 @@ public class MainForm extends javax.swing.JFrame {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         DefaultMutableTreeNode openTasks = new DefaultMutableTreeNode("Open Tasks", true);
         DefaultMutableTreeNode completedTasks = new DefaultMutableTreeNode("Completed Tasks", true);
-        root.add(openTasks);
-        root.add(completedTasks);
         
         // Go through the passed in task list and create the tree nodes for it
         for (TaskSummaryViewModel task : taskList)
@@ -188,8 +186,21 @@ public class MainForm extends javax.swing.JFrame {
                 openTasks.add(node);
         }
         
+        // Only add the core nodes if they have at least one child
+        if (openTasks.children().hasMoreElements())
+            root.add(openTasks);
+        if (completedTasks.children().hasMoreElements())
+            root.add(completedTasks);
+        
+        if (!root.children().hasMoreElements())
+            root.add(new DefaultMutableTreeNode("No Tasks Exist"));
+        
         TreeModel model = new DefaultTreeModel(root);
         taskTree.setModel(model);
+        
+        // expand all rows
+        for (int x = 0; x < taskTree.getRowCount(); x++)
+            taskTree.expandRow(x);
     }
     
     /**
