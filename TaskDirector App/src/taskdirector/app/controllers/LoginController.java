@@ -4,6 +4,7 @@ import taskdirector.services.interfaces.IUserService;
 import taskdirector.ui.forms.LoginForm;
 import taskdirector.events.listeners.ILoginAttemptEventListener;
 import java.util.UUID;
+import taskdirector.services.interfaces.ITaskService;
 
 /**
  * Controller to handle the login process
@@ -11,13 +12,14 @@ import java.util.UUID;
  */
 public class LoginController implements IController, ILoginAttemptEventListener {
     
-    protected UUID sessionId;
     protected IUserService userService;
+    protected ITaskService taskService;
     protected LoginForm loginForm;
     
-    public LoginController(IUserService userService)
+    public LoginController(IUserService userService, ITaskService taskService)
     {
         this.userService = userService;
+        this.taskService = taskService;
     }
     
     /**
@@ -39,5 +41,10 @@ public class LoginController implements IController, ILoginAttemptEventListener 
     public void LoginAttempted(String username, String password) {
         UUID sessionId = userService.Login(username, password);
         loginForm.dispose();
+        
+        // Activate the task editor controller
+        taskService.setCurrentSessionId(sessionId);
+        TaskEditorController controller = new TaskEditorController(taskService);
+        controller.Execute();
     }
 }

@@ -12,6 +12,12 @@ public class TaskSummaryViewModel {
     protected String name;
     protected boolean isCompleted;
     
+    @Override
+    public String toString()
+    {
+        return name;
+    }
+    
     public void setId(UUID id)
     {
         this.id = id;
