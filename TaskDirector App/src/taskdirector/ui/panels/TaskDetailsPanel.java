@@ -6,6 +6,8 @@
 package taskdirector.ui.panels;
 
 import java.util.UUID;
+import javax.swing.JOptionPane;
+import taskdirector.events.listeners.ITaskDetailsPanelClosePressedListener;
 import taskdirector.services.viewmodels.TaskDetailsViewModel;
 
 /**
@@ -62,6 +64,11 @@ public class TaskDetailsPanel extends javax.swing.JPanel {
         saveButton.setText("Save");
 
         closeButton.setText("Close");
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeButtonActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("%");
 
@@ -121,6 +128,31 @@ public class TaskDetailsPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+        // If any data has been modified but not saved, warn the user
+        if (dataModified)
+        {
+            final String msg = "Closing this screen will cause you to lose unsaved changes.  Continue?";
+            final String title  = "Close Without Saving?";
+
+            Object[] options = {"Yes", "No"};
+            int response = JOptionPane.showOptionDialog(this,
+                msg,
+                title,
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,     //do not use a custom Icon
+                options,  //the titles of buttons
+                options[1]); //default button title
+            
+            if (response != JOptionPane.YES_OPTION)
+                return;
+        }
+        
+        if (closePanelListener != null)
+            closePanelListener.CloseTaskDetailsPane(taskId);
+    }//GEN-LAST:event_closeButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private com.toedter.calendar.JDateChooser dueDateChooser;
@@ -138,9 +170,16 @@ public class TaskDetailsPanel extends javax.swing.JPanel {
 
     // Custom variables and properties
     private UUID taskId;
+    private boolean dataModified;
+    private ITaskDetailsPanelClosePressedListener closePanelListener;
     
     public UUID getTaskId()
     {
         return taskId;
+    }
+    
+    public void addTaskDetailsPanelClosePressedListener(ITaskDetailsPanelClosePressedListener listener)
+    {
+        closePanelListener = listener;
     }
 }

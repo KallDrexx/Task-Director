@@ -9,6 +9,7 @@ import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -16,6 +17,7 @@ import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import taskdirector.events.listeners.ICreateTaskEventListener;
+import taskdirector.events.listeners.ITaskDetailsPanelClosePressedListener;
 import taskdirector.events.listeners.ITaskDetailsRequestedListener;
 import taskdirector.services.viewmodels.TaskDetailsViewModel;
 import taskdirector.services.viewmodels.TaskSummaryViewModel;
@@ -27,7 +29,8 @@ import taskdirector.ui.panels.TaskDetailsPanel;
  *
  * @author KallDrexx
  */
-public class MainForm extends javax.swing.JFrame {
+public class MainForm extends javax.swing.JFrame 
+    implements ITaskDetailsPanelClosePressedListener {
 
     /** Creates new form MainForm */
     public MainForm() {
@@ -291,6 +294,7 @@ public class MainForm extends javax.swing.JFrame {
         }
         
         TaskDetailsPanel tab = new TaskDetailsPanel(task);
+        tab.addTaskDetailsPanelClosePressedListener(this);
         taskTabs.add(task.getName(), tab);
         taskTabs.setSelectedComponent(tab);
         tabbedTaskList.add(tab);
@@ -319,5 +323,26 @@ public class MainForm extends javax.swing.JFrame {
     {
         // Only one listener is allowed
         taskDetailsReqListeners = listener;
+    }
+
+    @Override
+    public void CloseTaskDetailsPane(UUID taskId) {
+        // Remove the task details tab for the requested task id
+        TaskDetailsPanel foundPanel = null;
+        for (TaskDetailsPanel panel : tabbedTaskList)
+        {
+            if (panel.getTaskId() == taskId)
+            {
+                foundPanel = panel;
+                break;
+            }
+        }
+        
+        // Remove the selected tab
+        if (foundPanel != null)
+        {
+            tabbedTaskList.remove(foundPanel);
+            taskTabs.remove(foundPanel);
+        }
     }
 }
