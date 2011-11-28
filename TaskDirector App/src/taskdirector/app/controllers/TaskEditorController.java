@@ -3,6 +3,7 @@ package taskdirector.app.controllers;
 import java.util.UUID;
 import taskdirector.events.listeners.ICreateTaskEventListener;
 import taskdirector.events.listeners.ITaskDetailsRequestedListener;
+import taskdirector.events.listeners.ITaskDetailsSaveListener;
 import taskdirector.services.interfaces.ITaskService;
 import taskdirector.services.viewmodels.NewTaskViewModel;
 import taskdirector.services.viewmodels.TaskDetailsViewModel;
@@ -13,7 +14,11 @@ import taskdirector.ui.forms.MainForm;
  * @author KallDrexx
  */
 public class TaskEditorController 
-    implements IController, ICreateTaskEventListener, ITaskDetailsRequestedListener {
+    implements IController, 
+               ICreateTaskEventListener, 
+               ITaskDetailsRequestedListener,
+               ITaskDetailsSaveListener
+{
 
     protected MainForm mainForm;
     protected ITaskService taskService;
@@ -30,6 +35,7 @@ public class TaskEditorController
         mainForm.addCreateTaskEventListener(this);
         mainForm.updateTasks(taskService.getAllTasks());
         mainForm.addTaskDetailsRequestedListener(this);
+        mainForm.addTaskDetailsSaveListener(this);
         mainForm.setVisible(true);
     }
 
@@ -50,6 +56,12 @@ public class TaskEditorController
     @Override
     public TaskDetailsViewModel getTaskDetails(UUID taskId) {
         return taskService.getTaskDetails(taskId);
+    }
+
+    @Override
+    public void SaveTaskDetails(TaskDetailsViewModel task) {
+        taskService.UpdateTaskDetails(task);
+        mainForm.updateTasks(taskService.getAllTasks());
     }
     
 }

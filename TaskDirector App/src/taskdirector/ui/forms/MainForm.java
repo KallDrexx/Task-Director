@@ -19,6 +19,7 @@ import javax.swing.tree.TreePath;
 import taskdirector.events.listeners.ICreateTaskEventListener;
 import taskdirector.events.listeners.ITaskDetailsPanelClosePressedListener;
 import taskdirector.events.listeners.ITaskDetailsRequestedListener;
+import taskdirector.events.listeners.ITaskDetailsSaveListener;
 import taskdirector.services.viewmodels.TaskDetailsViewModel;
 import taskdirector.services.viewmodels.TaskSummaryViewModel;
 import taskdirector.ui.dialogs.CreateTaskDialog;
@@ -227,6 +228,7 @@ public class MainForm extends javax.swing.JFrame
     protected ITaskDetailsRequestedListener taskDetailsReqListeners;
     protected TaskSummaryPanel summaryPanel;
     protected List<TaskDetailsPanel> tabbedTaskList;
+    protected ITaskDetailsSaveListener saveTaskDetailsListener;
     
     /**
      * Updates the list of tasks for the form
@@ -295,6 +297,7 @@ public class MainForm extends javax.swing.JFrame
         
         TaskDetailsPanel tab = new TaskDetailsPanel(task);
         tab.addTaskDetailsPanelClosePressedListener(this);
+        tab.addTaskDetailsSaveListener(saveTaskDetailsListener);
         taskTabs.add(task.getName(), tab);
         taskTabs.setSelectedComponent(tab);
         tabbedTaskList.add(tab);
@@ -323,6 +326,11 @@ public class MainForm extends javax.swing.JFrame
     {
         // Only one listener is allowed
         taskDetailsReqListeners = listener;
+    }
+    
+    public void addTaskDetailsSaveListener(ITaskDetailsSaveListener listener)
+    {
+        saveTaskDetailsListener = listener;
     }
 
     @Override

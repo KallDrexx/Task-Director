@@ -5,9 +5,13 @@
  */
 package taskdirector.ui.panels;
 
+import java.awt.event.ActionListener;
 import java.util.UUID;
 import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import taskdirector.events.listeners.ITaskDetailsPanelClosePressedListener;
+import taskdirector.events.listeners.ITaskDetailsSaveListener;
 import taskdirector.services.viewmodels.TaskDetailsViewModel;
 
 /**
@@ -46,7 +50,7 @@ public class TaskDetailsPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         notesTextPanel = new javax.swing.JTextPane();
         saveButton = new javax.swing.JButton();
-        closeButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
 
         jLabel1.setText("Name:");
@@ -62,11 +66,16 @@ public class TaskDetailsPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(notesTextPanel);
 
         saveButton.setText("Save");
-
-        closeButton.setText("Close");
-        closeButton.addActionListener(new java.awt.event.ActionListener() {
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeButtonActionPerformed(evt);
+                saveButtonActionPerformed(evt);
+            }
+        });
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
             }
         });
 
@@ -88,7 +97,7 @@ public class TaskDetailsPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(saveButton)
                         .addGap(18, 18, 18)
-                        .addComponent(closeButton))
+                        .addComponent(cancelButton))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(percentCompleteSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -123,38 +132,53 @@ public class TaskDetailsPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton)
-                    .addComponent(closeButton))
+                    .addComponent(cancelButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
-        // If any data has been modified but not saved, warn the user
-        if (dataModified)
-        {
-            final String msg = "Closing this screen will cause you to lose unsaved changes.  Continue?";
-            final String title  = "Close Without Saving?";
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        final String msg = "Closing this screen will cause you to lose unsaved changes.  Continue?";
+        final String title  = "Close Without Saving?";
 
-            Object[] options = {"Yes", "No"};
-            int response = JOptionPane.showOptionDialog(this,
-                msg,
-                title,
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE,
-                null,     //do not use a custom Icon
-                options,  //the titles of buttons
-                options[1]); //default button title
-            
-            if (response != JOptionPane.YES_OPTION)
-                return;
-        }
+        Object[] options = {"Yes", "No"};
+        int response = JOptionPane.showOptionDialog(this,
+            msg,
+            title,
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null,     //do not use a custom Icon
+            options,  //the titles of buttons
+            options[1]); //default button title
+
+        if (response != JOptionPane.YES_OPTION)
+            return;
         
         if (closePanelListener != null)
             closePanelListener.CloseTaskDetailsPane(taskId);
-    }//GEN-LAST:event_closeButtonActionPerformed
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        if (saveTaskDetailsListener != null)
+        {
+            Double percentage = Double.parseDouble(percentCompleteSpinner.getValue().toString()) / 100;
+            
+            TaskDetailsViewModel taskVm = new TaskDetailsViewModel();
+            taskVm.setId(taskId);
+            taskVm.setName(taskNameTextbox.getText());
+            taskVm.setDueDate(dueDateChooser.getDate());
+            taskVm.setPercentCompleted(percentage);
+            taskVm.setNotes(notesTextPanel.getText());
+            
+            saveTaskDetailsListener.SaveTaskDetails(taskVm);
+            
+            if (closePanelListener != null)
+                closePanelListener.CloseTaskDetailsPane(taskId);
+        }
+    }//GEN-LAST:event_saveButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton closeButton;
+    private javax.swing.JButton cancelButton;
     private com.toedter.calendar.JDateChooser dueDateChooser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -170,8 +194,8 @@ public class TaskDetailsPanel extends javax.swing.JPanel {
 
     // Custom variables and properties
     private UUID taskId;
-    private boolean dataModified;
     private ITaskDetailsPanelClosePressedListener closePanelListener;
+    private ITaskDetailsSaveListener saveTaskDetailsListener;
     
     public UUID getTaskId()
     {
@@ -181,5 +205,10 @@ public class TaskDetailsPanel extends javax.swing.JPanel {
     public void addTaskDetailsPanelClosePressedListener(ITaskDetailsPanelClosePressedListener listener)
     {
         closePanelListener = listener;
+    }
+    
+    public void addTaskDetailsSaveListener(ITaskDetailsSaveListener listener)
+    {
+        saveTaskDetailsListener = listener;
     }
 }
